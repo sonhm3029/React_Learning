@@ -134,4 +134,4 @@ Xem live demo babel chuyển đổi JSX thành Javascript ở web sau:
 
 **Ví dụ:**
 
-![jsx_1](img/jsx_1.png)
+![jsx_1](img/JSX_1.png)
