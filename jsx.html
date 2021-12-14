@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script crossorigin src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+</head>
+<body>
+    <div id="root1"></div>
+    <div id="root2"></div>
+    <script type="text/babel">
+        const varia = "JSX";
+        const ul = <ul id="demo">
+            <li style={{color:'red', fontSize:'1.6rem'}}>Javascript</li>
+            <li>ReactJS</li>
+            <li>{varia}</li>
+        </ul>;
+
+        ReactDOM.render(ul, document.getElementById("root1"));
+
+
+        // Ví dụ:
+        const names = [
+            {
+                name:"Son"
+            },
+            {
+                name:"Minh"
+            },
+            {
+                name:"Hoang"
+            }
+        ];
+
+        const name_arr = names.map( name_obj => <li>{name_obj.name}</li>)
+        const new_ul = <ul>{name_arr[0]} {name_arr[1]} {name_arr[2]}</ul>
+        ReactDOM.render(new_ul, document.getElementById("root2"));
+    </script>
+</body>
+</html>
