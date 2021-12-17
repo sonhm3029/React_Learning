@@ -36,9 +36,16 @@
             }
         ];
 
-        const name_arr = names.map( name_obj => <li>{name_obj.name}</li>)
-        const new_ul = <ul>{name_arr[0]} {name_arr[1]} {name_arr[2]}</ul>
-        ReactDOM.render(new_ul, document.getElementById("root2"));
+        const jsx_arr = (
+            <ul>
+                {names.map( nameObj => <li>{nameObj.name}</li>)}
+            </ul>
+        )
+
+        console.log(jsx_arr);
+       
+        
+        ReactDOM.render(jsx_arr, document.getElementById("root2"));
     </script>
 </body>
 </html>

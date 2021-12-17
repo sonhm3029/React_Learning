@@ -135,3 +135,64 @@ Xem live demo babel chuyển đổi JSX thành Javascript ở web sau:
 **Ví dụ:**
 
 ![jsx_1](img/JSX_1.png)
+
+Ví dụ render mảng dữ liệu với JSX:
+
+![jsx_2](img/JSX_2.png)
+
+Chú ý khi với `javascript` thường, mảng names sau khi map sẽ cần phải join lại để dùng vs `innerHTML` method còn đối với `JSX` thì việc truyền vào mảng là hợp lý đối với cú pháp `React.createElement`. Xem hình ảnh sau để hiểu rõ tại sao ta không cần map mảng names khi dùng với `React` và `JSX`
+
+![jsx_3](img/JSX_3.png)
+
+Ta thấy children của `ul` có kiểu là `Array` => hợp lý.
+
+**Lưu ý:**
+
+Khi ta muốn render cặp element sau:
+
+```html
+    <h1>Heading</h1>
+    <p>Parapraph</p>
+```
+
+Ta không thể dùng JSX như sau:
+
+```Javascript
+    const element = (
+        <h1>Heading</h1>
+        <p>Paragraph</p>
+    )
+```
+
+Vì đoạn code như trên sẽ có lỗi:
+
+![jsx_4](img/JSX_4.png)
+
+Vì nó sẽ được phiên dịch thành:
+
+```Javascript
+    const element = (
+        React.createElement("h1",null,"Heading")
+        React.createElement("p",null,"Paragraph")
+    )
+```
+
+=> Không có syntax như vậy.
+
+Nhìn vào error message ta thấy rằng, JSX element phải được wrap trong một thẻ nào đó. Như vậy đoạn code trên ta có thể sửa như sau:
+
+```Javascript
+    const element = (
+        <div>
+            <h1>Heading</h1>
+            <p>Paragraph</p>
+        </div>
+    )
+```
+
+Tuy nhiên việc làm như trên sẽ làm sinh ra một thẻ `div` không mong muốn. Thay vì vậy ta có thể làm như sau:
+
+![jsx_5](img/JSX_5.png)
+
+Thẻ `React.Fragment` được coi như là một container ảo cho `JSX` element mà không sinh thêm thẻ nào trong html thật.
+
