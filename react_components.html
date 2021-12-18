@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script crossorigin src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+</head>
+<body>
+    <div id="root1"></div>
+    <div id="root2"></div>
+    <div id="root3"></div>
+    <div id="root4"></div>
+
+    <script type="text/babel">
+
+
+    function Item() {
+        return (
+            <div className="item">
+                <h1 className="item-title">This is heading</h1>
+                <p className="item-pragraph">This is paragraph</p>
+            </div>
+        )
+    }
+
+    function TestComponent(props) {
+        return (
+            <div className="item">
+                <h1 className="item-title">{props.heading}</h1>
+                <p className="item-pragraph">{props.paragraph}</p>
+            </div>
+        )
+    }
+    // Dùng destructoring
+    function TestDestrucCom({
+        heading,
+        paragraph
+    }) {
+        return (
+            <div className="item">
+                <h1 className="item-title">{heading}</h1>
+                <p className="item-pragraph">{paragraph}</p>
+            </div>
+        )
+    }
+    
+    function App() {
+        return (
+            <div id="wrapper">
+                <Item/>
+                <TestComponent
+                    heading= "This is heading parameter"
+                    paragraph = "This is paragraph parameter"
+                 />
+                <TestDestrucCom
+                    heading= "This is heading parameter with destructoring"
+                    paragraph = "This is paragraph parameter with destructoring"
+                />
+            </div>
+        )
+    }
+
+    
+
+    ReactDOM.render(<App/>, document.getElementById('root1'));
+
+    // Thực hành
+    var menu = 
+    [
+        {
+          "id": 877,
+          "short_name": "A1",
+          "name": "Won Ton Soup with Chicken",
+          "description": "chicken-stuffed won tons in clear chicken broth with white meat chicken pieces and a few scallions",
+          "price_small": 2.55,
+          "price_large": 5.0,
+          "small_portion_name": "pint",
+          "large_portion_name": "quart"
+        },
+        {
+          "id": 878,
+          "short_name": "A2",
+          "name": "Egg Drop Soup",
+          "description": "chicken broth with egg drop",
+          "price_small": 2.25,
+          "price_large": 4.5,
+          "small_portion_name": "pint",
+          "large_portion_name": "quart"
+        },
+        {
+          "id": 879,
+          "short_name": "A3",
+          "name": "Chicken Corn Soup",
+          "description": "clear chicken broth with creamy corn and egg drop with white meat chicken pieces",
+          "price_small": 2.75,
+          "price_large": 5.5,
+          "small_portion_name": "pint",
+          "large_portion_name": "quart"
+        },
+        {
+          "id": 880,
+          "short_name": "A4",
+          "name": "Hot and Sour Soup",
+          "description": "tofu, chicken, mushroom, bamboo shoot, and egg",
+          "price_small": 2.55,
+          "price_large": 5.0,
+          "small_portion_name": "pint",
+          "large_portion_name": "quart"
+        },
+        {
+          "id": 881,
+          "short_name": "A5",
+          "name": "Egg Drop with Won Ton Soup",
+          "description": "chicken soup with egg drop and won tons",
+          "price_small": 3.0,
+          "price_large": 6.0,
+          "small_portion_name": "pint",
+          "large_portion_name": "quart"
+        }
+    ]
+
+
+    //Component
+    // function Food({food}) {
+    //     return (
+    //         <div className="food-wrapper">
+    //             <h2 className="food_name">{food.name}</h2>
+    //             <h3 className="food_price">{food.price_large}$</h3>
+    //             <p className="food_description">{food.description}</p>
+    //         </div>
+    //     )
+    // }
+    // console.log(Food)
+
+    // ReactDOM.render(
+    //     <React.Fragment>
+    //         {
+    //             menu.map( (food,index) => {
+                    
+    //                 return (
+    //                     <Food
+    //                         key={index}
+    //                         food={food}
+    //                     />
+    //                 )
+    //             })
+    //         }
+    //     </React.Fragment>,
+    //     document.getElementById("root2")
+    // )
+    //Hoặc
+    function Food(props) {
+        return (
+            <div className="food-wrapper">
+                <h2 className="food_name">{props.name}</h2>
+                <h3 className="food_price">{props.price_large}$</h3>
+                <p className="food_description">{props.description}</p>
+            </div>
+        )
+    }
+    console.log(Food)
+
+    ReactDOM.render(
+        <React.Fragment>
+            {
+                menu.map( (food,index) => {
+                    
+                    return (
+                        <Food
+                            key={index}
+                            {...food}
+                        />
+                    )
+                })
+            }
+        </React.Fragment>,
+        document.getElementById("root2")
+    )
+
+    // Ví dụ tiếp về component
+    const Form = {
+        Input() {
+            return <input style={{marginBottom: "12px"}}/>
+        },
+        Textarea() {
+            return <textarea style={{display:"block"}}></textarea>
+        }
+    }
+
+    ReactDOM.render(
+        <React.Fragment>
+            <Form.Input/>
+            <Form.Textarea/>
+        </React.Fragment>,
+        document.getElementById("root3")
+    )
+    // Ví dụ với children prop
+    function Compo({clas,children}) {
+            return (
+                <div className={clas} >{children}</div>
+            )
+        }
+
+    const test = (
+        <div id="wrapper">
+            <Compo clas="OK"><h1>Hello</h1></Compo>
+        </div>
+    )
+
+    ReactDOM.render(test, document.getElementById("root4"))
+    </script>
+</body>
+</html>

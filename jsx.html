@@ -12,6 +12,7 @@
 <body>
     <div id="root1"></div>
     <div id="root2"></div>
+    <div id="root3"></div>
     <script type="text/babel">
         const varia = "JSX";
         const ul = <ul id="demo">
@@ -46,6 +47,29 @@
        
         
         ReactDOM.render(jsx_arr, document.getElementById("root2"));
+
+        // React element type
+        function Header() {
+            return (
+              <div className="header">New Header</div>
+            )
+        }
+
+        class Content extends React.Component {
+          render() {
+            return(<div className="content">Content</div>)
+          }
+        }
+
+        const app = (
+          <div className="wrapper">
+            <Header />
+            <Content />
+            <div className="footer">Footer</div>
+          </div>
+        )
+
+        ReactDOM.render(app, document.getElementById("root3"));
     </script>
 </body>
 </html>
