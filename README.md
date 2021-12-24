@@ -385,3 +385,80 @@ Ta có ví dụ sau:
 ```
 
 Ta thấy với trường hợp dùng `<Component>Data</Component>`, thì Data ở đấy chính là children theo đúng cú pháp `React.createElement`.
+
+## VII. useState
+
+Dùng để thay đổi dữ liệu trong Component. Sử dụng trong function component.
+
+**Ví dụ:**
+
+```Javascript
+import {useState} from 'react'
+
+function App() {
+    const [counter, setCounter] = useState(1);
+
+    const handleIncreasing = () => {
+        setCounter(counter + 1);
+    }
+
+    return (
+        <div className="App" style={{padding: 20}}>
+            <h1>{counter}</h1>
+            <button onClick={handleIncreasing}>Increase</button>
+        </div>
+    );
+}
+
+export default App;
+```
+
+**Kết quả:**
+
+![use_state_1](/img/use_state_1.png)
+
+Kết quả nhận được là mỗi lần ấn vào button sẽ tăng số đếm lên 1.
+
+Như vậy ta có syntax:
+
+```Javascript
+[state, setState] = useState(initialState);
+```
+
+Trong đó:
+
+- `initialState` là giá trị ban đầu của dữ liệu. Nếu truyền vào parameter là 1 hàm thì `initialState` là giá trị trả về của hàm chứ không phải hàm.
+
+- `setState` sẽ là hàm để xử lý thay đổi dữ liệu của `state` với giá trị ban đầu của `state` là `initialState`. Như vậy `setState` là thay thế `state` bằng giá trị mới.
+
+Nếu như ta truyền vào `setState` là một callback. Cùng với ví dụ bên trên, ta xét :
+
+```Javascript
+const handleIncreasing = () => {
+    setCounter(counter + 1);
+    setCounter(counter + 1);
+    setCounter(counter + 1);
+}
+```
+
+Nếu như sử dụng hàm `handleIncreasing` như trên thì kết quả khi ấn nút `Increase` không thay đổi bởi vì khi gọi `setCounter(counter +1)` thì React sẽ gọi lại hàm component là `App` và khi đó `counter = counter +1`. Tức là với giá trị ban đầu của `counter = 1` ta sẽ nhận được:
+
+```Javascript
+const handleIncreasing = () => {
+    setCounter(2);
+    setCounter(2);
+    setCounter(2);
+}
+```
+
+=> 3 hàm là như nhau, React sẽ chỉ gọi 1 lần. Trong trường hợp này, nếu muốn code hoạt động đúng là khi click button ta được số cộng thêm 3. ta sử dụng:
+
+```Javascript
+const handleIncreasing = () => {
+    setCounter( preCounter => preCounter + 1);
+    setCounter( preCounter => preCounter + 1);
+    setCounter( preCounter => preCounter + 1);
+}
+```
+
+Trong đó `preCounter` là giá trị trước đó của state.
