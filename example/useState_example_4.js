@@ -1,24 +1,5 @@
-import logo from './logo.svg';
-import './App.css';
+// ví dụ useState và localStorage vào làm todoList
 
-import {useState} from 'react'
-
-// function App() {
-//     const [counter, setCounter] = useState(1);
-
-//     const handleIncreasing = () => {
-//         setCounter(preCounter => preCounter +1);
-//         setCounter(preCounter => preCounter +1);
-//         setCounter(preCounter => preCounter +1);
-//     }
-
-//     return (
-//         <div className="App" style={{padding: 20}}>
-//             <h1>{counter}</h1>
-//             <button onClick={handleIncreasing}>Increase</button>
-//         </div>
-//     );
-// }
 function App() {
 
     const [work, setWork] = useState('');
@@ -53,7 +34,3 @@ function App() {
         </div>
     )
 }
-
-
-
-export default App;

@@ -462,3 +462,10 @@ const handleIncreasing = () => {
 ```
 
 Trong đó `preCounter` là giá trị trước đó của state.
+
+**Một số ví dụ của sử dụng useState, thay thế code ở function App() trong file [App.js](./my-react-app/src/App.js) bằng các đoạn code trong file sau:**
+
+- [useState_example_1](./example/useState_example_1.js)
+- [useState_example_2](./example/useState_example_2.js)
+- [useState_example_3](./example/useState_example_3.js)
+- [useState_example_4](./example/useState_example_4.js)
