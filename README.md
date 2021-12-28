@@ -498,8 +498,8 @@ useEffect(callback, [deps]);
 
 **Đối với các cách truyền tham số:**
 
-#   |   chức năng
-----|----
+Cách dùng   |  chức năng
+------------|------------
 useEffect(callback)| `callback` được gọi mỗi khi component được re-render
 useEffect(callback, [])| `callback` được gọi đúng một lần đầu tiên khi component được mounted
 useEffect(callback, [deps])| `callback` sẽ được gọi mỗi khi `deps` thay đổi.
