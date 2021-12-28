@@ -1,3 +1,5 @@
+// Copy ví dụ thay thế vào file App.js để chạy
+
 const gifts = ['phan thuong 1', 'phan thuong 2', 'phan thuong 3'];
 
 function App() {

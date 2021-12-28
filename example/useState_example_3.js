@@ -1,3 +1,4 @@
+// Copy ví dụ thay thế vào file App.js để chạy
 // Sử dụng useState làm việc với form : example
 
 // Sử dụng với input:

@@ -2,6 +2,7 @@ import logo from './logo.svg';
 import './App.css';
 
 import {useState} from 'react'
+import Content from './Content'
 
 // function App() {
 //     const [counter, setCounter] = useState(1);
@@ -21,37 +22,15 @@ import {useState} from 'react'
 // }
 function App() {
 
-    const [work, setWork] = useState('');
-    const [listWorks, setListWorks] = useState(()=>{
-        return JSON.parse(localStorage.getItem('works')) ??[];
-    });
-
-
-    const addWork = () => {
-        setListWorks( pre => {
-            const newListWorks = [...pre, work]
-            localStorage.setItem('works', JSON.stringify(newListWorks));
-            return newListWorks;
-        });
-        setWork('');
-    }
+    const [show, setShow] = useState(false);
 
     return (
-        <div id='App' style={{padding:32}}>
-            <input
-                value={work}
-                onChange={e => setWork(e.target.value)}
-            />
-            <button onClick={addWork}>Thêm</button>
-            <ul>
-                {listWorks.map( (item,index) => {
-                    return (
-                        <li key={index}>{item}</li>
-                    )
-                })}
-            </ul>
+        <div id='App' style={{padding: 40}}>
+            <button onClick={() => setShow(!show)}>Show/Hide</button>
+            {show && <Content />}
         </div>
     )
+   
 }
 
 

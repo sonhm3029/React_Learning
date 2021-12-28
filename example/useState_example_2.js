@@ -1,3 +1,4 @@
+// Copy ví dụ thay thế vào file App.js để chạy
 // Example with binding:
 // one way binding (ràng buộc một chiều): Khi thay đổi UI thì state thay đổi.
 // two way biding (ràng buộc 2 chiều): Khi thay đổi UI thì state thay đổi

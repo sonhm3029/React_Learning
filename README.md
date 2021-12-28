@@ -469,3 +469,43 @@ Trong đó `preCounter` là giá trị trước đó của state.
 - [useState_example_2](./example/useState_example_2.js)
 - [useState_example_3](./example/useState_example_3.js)
 - [useState_example_4](./example/useState_example_4.js)
+
+## VIII. useEffect()
+
+Dùng trong trường hợp thay đổi các side effect.
+
+Ví dụ:
+
+- Update DOM
+- Call API
+- Listen DOM Events:
+  - Scroll
+  - resize window
+- Timer function
+
+**Syntax:**
+
+```Javascript
+import {useEffect} from 'react'
+
+useEffect(callback);
+useEffect(callback, []);
+useEffect(callback, [deps]);
+```
+
+- Ứng với mỗi cách truyền parameter vào `useEffect()` thì `callback` đều được gọi mỗi khi `Component` được mounted vào DOM.
+- `callback` trong `useEffect` chỉ được thực hiện khi component đã được thêm vào DOM.
+
+**Đối với các cách truyền tham số:**
+
+#   |   chức năng
+----|----
+useEffect(callback)| `callback` được gọi mỗi khi component được re-render
+useEffect(callback, [])| `callback` được gọi đúng một lần đầu tiên khi component được mounted
+useEffect(callback, [deps])| `callback` sẽ được gọi mỗi khi `deps` thay đổi.
+
+Xem các ví dụ:
+
+- [useEffect_example_1](./example/useEffect_example_1.js)
+- [useEffect_example_2](./example/useEffect_example_2.js)
+

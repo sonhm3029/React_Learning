@@ -1,3 +1,4 @@
+// Copy ví dụ thay thế vào file App.js để chạy
 // ví dụ useState và localStorage vào làm todoList
 
 function App() {
