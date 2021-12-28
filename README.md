@@ -509,3 +509,7 @@ Xem các ví dụ:
 - [useEffect_example_1](./example/useEffect_example_1.js)
 - [useEffect_example_2](./example/useEffect_example_2.js)
 
+**Lưu ý với cleaning up function dùng trong useEffect:**
+
+- `Clean up function` luôn được gọi trước khi component được unmounted.
+- `clean up function` được gọi trước khi callback được gọi( trừ lần mounted) -> trường hợp này thường được sử dụng đối với `useEffect(callback, [deps])`.
