@@ -683,3 +683,149 @@ Khi `inputValue` thay đổi đồng nghĩa với với việc `useEffect` sẽ 
 4. Gọi cleanup function nếu có
 5. Gọi `callback` của `useEffect`, lúc này thì `previousInputValue.current` mới được cập nhật lên là giá trị hiện tại của `inputValue` và khi ta click button thì quá trình từ 1 đến 5 lại được lặp lại.
 
+## XI. React.memo (HOC)
+
+Xét ví dụ sau:
+
+Trong file `Content.js`
+
+```Javascript
+function Content() {
+    console.log('re-render');
+    return (
+        <h1>This is children component</h1>
+    );
+}
+
+export default Content;
+
+```
+
+Trong file `App.js`
+
+```Javascript
+import {useState} from 'react'
+import Content from './Content.js'
+
+function App() {
+    const [count, setCount] = useState(0);
+
+    return (
+        <>
+            <Content/>
+            <h1>{count}</h1>
+            <button onClick={() => setCount(count + 1)}>Click me</button>
+        </>
+    )
+}
+```
+
+Ta thấy khi click button thì state của `App` thay đổi dẫn đến việc `App` Component re-render đồng thời làm cho `Content` component bị re-render theo mặc dù state của `Content` component không đổi.
+
+Để khắc phục việc này (giúp tăng performance) thì ta có thể dùng `memo` của react bằng cách.
+
+Trong file `Content.js`
+
+```Javascript
+import {memo} from 'react'
+
+function Content() {
+    // Code goes here
+}
+
+export default memo(Content)
+```
+
+Nếu không destructuring `memo` từ `react` ra thì có thể dùng `React.memo()`.
+
+Như vậy, `Content` component sẽ không bị re-render theo Component cha là `App` component nếu như không có state nào của nó bị thay đổi.
+
+Nếu như có state nào của `Content` bị thay đổi thì nó vẫn re-render bình thường.
+
+## XII. useCallback
+
+Xét ví dụ như khi dùng `memo` nhưng thay đổi như sau:
+
+Trong file `Content.js`
+
+```Javascript
+import {memo} from 'react'
+
+function Content({increasing}) {
+    console.log('re-render');
+    return (
+        <>
+            <h1>This is children component</h1>
+            <button onClick = {increasing}>Click me</button>
+        </>
+    );
+}
+
+export default Content;
+```
+
+Trong file `App.js`
+
+```Javascript
+import {useState} from 'react'
+import Content from './Content.js'
+
+function App() {
+    const [count, setCount] = useState(0);
+
+    const increasing = () => {
+        setCount(pre => pre +1);
+    }
+
+    return (
+        <>
+            <h1>{count}</h1>
+            <Content increasing = {increasing}/>
+        </>
+    )
+}
+```
+
+Kết quả:
+
+![useCallback_1](./img/useCallback_1.png)
+
+Như ta thấy mặc dù đã dùng memo và không có properties nào của `Content` component bị thay đổi thế nhưng nó lại vẫn bị re-render.
+
+Thực tế thì vẫn có một property của `Content` bị thay đổi đó chính là hàm `increasing`. Lý do khi `App` component thay đổi state, nó sẽ re-render và hàm `increasing` của nó để truyền vào `Content` component cũng sẽ bị re-declared ( thay đổi tham chiếu) mặc dù nội dung của nó không đổi. Vì vậy nên `Content` component vẫn bị re-render.
+
+Để khắc phục việc này, cải thiện performance thì ta có thể dùng `useCallback` hook
+
+**Syntax:**
+
+```Javascript
+useCallback(callback, [deps]);
+```
+
+đối với ví dụ trên ta sử dụng như sau trong file `App.js`
+
+```Javascript
+import {useState, useCallback} from 'react'
+import Content from './Content.js'
+
+function App() {
+    const [count, setCount] = useState(0);
+
+    const increasing = useCallback(() => {
+        setCount( pre => pre +1);
+    },[]);
+
+    return (
+        <>
+            <h1>{count}</h1>
+            <Content increasing = {increasing}/>
+        </>
+    )
+}
+```
+
+Bây giờ thì `Content` component sẽ chỉ thay đổi nếu như props nào đó của nó thay đổi.
+
+**Chú ý:**
+
+- Việc sử dụng `useCallback` thường được dùng với `memo` để khắc phục những việc mà `memo` chưa làm được như ví dụ trên là sự thay đổi tham chiếu hàm.

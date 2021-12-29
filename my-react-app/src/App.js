@@ -1,6 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
-import {useState} from 'react'
+import {useState, useCallback} from 'react'
 import Content from './Content'
 
 // function App() {
@@ -31,8 +31,6 @@ function App() {
     )
    
 }
-
-
 
 
 export default App;

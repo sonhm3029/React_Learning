@@ -1,4 +1,4 @@
-import {useState, useEffect, useRef} from 'react'
+import {useState, useEffect, useRef, memo} from 'react'
 
 
 const types = ['posts', 'albums', 'todos'];
@@ -73,4 +73,5 @@ function Content() {
     )
 }
 
-export default Content;
+
+export default memo(Content);
