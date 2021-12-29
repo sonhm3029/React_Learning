@@ -513,3 +513,173 @@ Xem các ví dụ:
 
 - `Clean up function` luôn được gọi trước khi component được unmounted.
 - `clean up function` được gọi trước khi callback được gọi( trừ lần mounted) -> trường hợp này thường được sử dụng đối với `useEffect(callback, [deps])`.
+
+## IX. useLayoutEffect()
+
+`useLayoutEffect()` cũng dùng để thực hiện các side effect như `useEffect()`. Thông thường `useEffect()` được sử dụng nhiều hơn vì `useLayoutEffect()` khá giống với `useEffect()`.
+
+So sánh:
+
+Các bước thực hiện trong DOM
+
+`useLayoutEffect()` | `useEffect()`
+--------------------|--------------
+1.Cập nhật lại state|1.Cập nhật lại state
+2.Cập nhật DOM (mutated)|2.Cập nhật DOM (mutated)
+3.Gọi cleanup function nếu deps thay đổi(sync)|3.Render lại UI
+4.Gọi callback(sync)|4.Gọi cleanup function nếu deps thay đổi(sync)|3.Render lại UI
+5.Render lại UI|5.Gọi callback(sync)
+
+## X. useRef
+
+- `useRef` hook cho phép ta sử dụng các biến trong Component như 1 biến có phạm vi toàn cục, nghĩa là biến sẽ giữ nguyên khi Component re-render.
+
+Ví dụ:
+
+```Javascript
+import {useState} from 'react'
+
+function App() {
+    const [count, setCount] = useState(0);
+
+    let my_count = 0;
+
+    const handleCount = () => {
+        my_count +=1;
+        setCount(pre => pre +1);
+    }
+    console.log("my_count: ",my_count);
+
+    return (
+        <>
+            <h1>{count}</h1>
+            <button onClick={handleCount}>Click me</button>
+        </>
+    )
+}
+```
+
+Ở ví dụ trên, khi Click vào button, hàm `handleCount` được gọi và tăng giá trị của biến `my_count` lên 1 đồng thời gọi `useState` nên Component sẽ được render lại. Ta có kết quả:
+
+![usEffect_1](./img/useRef_1.png)
+
+Ta thấy biến `my_count` sẽ được set lại liên tục mỗi khi Component được gọi vì nó có phạm vi cục bộ, chỉ tồn tại trong Component( vì Component chính là function).
+
+Ta có thể giải quyết bằng cách dùng `useRef()` hook thay vì đưa `my_count` ra làm biến toàn cục.
+
+```Javascript
+import {useState, useRef} from 'react'
+
+function App() {
+    const [count, setCount] = useState(0);
+
+    const my_count = useRef(0);
+
+    const handleCount = () => {
+        my_count.current +=1;
+        setCount(pre => pre +1);
+    }
+    console.log("my_count: ",my_count.current);
+
+    return (
+        <>
+            <h1>{count}</h1>
+            <button onClick={handleCount}>Click me</button>
+        </>
+    )
+}
+```
+
+Kết quả:
+
+![useRef_2](./img/useRef_2.png)
+
+Như vậy `useRef` có syntax:
+
+```Javascript
+const ref = useRef(initialValue);
+```
+
+Trong đó initialValue là giá trị khởi tạo khi Component được mounted. `useRef(initialValue)` sẽ trả về object.
+
+Đoạn code trên sẽ có kết quả như sau:
+
+```Javascript
+ref = {
+    current: initialValue
+}
+```
+
+Như vậy ta có thể truy cập vào giá trị mà ta muốn dùng bằng cách sử dụng `ref.current`.
+
+- Một cách dùng khác của `useRef` đó là truy cập và lưu trữ trực tiếp element trong DOM.
+- Trong React, ta có thể thêm `ref` attribute cho element, sử dụng nó với `useRef` để truy cập nó trực tiếp trong DOM.
+
+**Ví dụ:**
+
+```Javascript
+import {useRef} from 'react'
+
+function App() {
+  const inputElement = useRef();
+
+  const focusInput = () => {
+    inputElement.current.focus();
+  };
+
+  return (
+    <>
+      <input type="text" ref={inputElement} />
+      <button onClick={focusInput}>Focus Input</button>
+    </>
+  );
+}
+```
+
+Ví dụ trên, biến `inputElement` dùng để truy cập trực tiếp đến `input` element.
+
+- Cuối cùng ta sẽ nói đến cách dùng `useRef` để keep track với giá trị trước khi `setState` của `useState`.
+
+**Ví dụ:**
+
+```Javascript
+import { useState, useEffect, useRef } from "react";
+
+function App() {
+  const [inputValue, setInputValue] = useState("");
+  const previousInputValue = useRef("");
+
+  useEffect(() => {
+    previousInputValue.current = inputValue;
+  }, [inputValue]);
+
+  return (
+    <>
+      <input
+        type="text"
+        value={inputValue}
+        onChange={(e) => setInputValue(e.target.value)}
+      />
+      <h2>Current Value: {inputValue}</h2>
+      <h2>Previous Value: {previousInputValue.current}</h2>
+    </>
+  );
+}
+```
+
+Lý giải: Khi Component được mounted ra thì callback của `useEffect` được gọi nên:
+
+```Javascript
+previousInputValue.current = inputValue;
+```
+
+Sau đó khi ta gõ vào ô input, ví dụ gõ kí tự `a` thì `onChange` event sẽ gọi đến `setInputValue('a')`. Như vậy Component được `setState` nên sẽ được render lại, khi đó `inputValue = 'a'` do nhận được từ `setInputValue('a')`.
+
+Khi `inputValue` thay đổi đồng nghĩa với với việc `useEffect` sẽ được gọi và có thứ tự thực hiện như sau:
+
+1. `inputValue` thay đổi
+2. Cập nhật lại DOM.
+3. Render lại UI, lúc này do `callback` của `useEffect` chủa được gọi nên `previousInputValue.current` vẫn mang giá trị trước đó của `inputValue` là `''`. Vì vậy mà hiển thị ra màn hình sẽ là giá trị trước đó của `inputValue` và giá trị hiện tại của `inputValue`.
+4. Gọi cleanup function nếu có
+5. Gọi `callback` của `useEffect`, lúc này thì `previousInputValue.current` mới được cập nhật lên là giá trị hiện tại của `inputValue` và khi ta click button thì quá trình từ 1 đến 5 lại được lặp lại.
+
