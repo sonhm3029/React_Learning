@@ -1,5 +1,32 @@
 # REACTJS SELF LEARNING
 
+[I. React.createElement()](#i-reactcreateelement)
+
+[II. React-DOM](#ii-react-dom)
+
+[III. JSX](#iii-jsx)
+
+[IV. Props & Components](#iv-props--components)
+
+[V. DOM Events](#v-dom-events)
+
+[VI. Note JSX](#vi-note-jsx)
+
+[VII. useState](#vii-usestate)
+
+[VIII. useEffect](#viii-useeffect)
+
+[IX. useLayoutEffect](#ix-uselayouteffect)
+
+[X. useRef](#xi-useref)
+
+[XI. React.memo (HOC)](#xi-reactmemo-hoc)
+
+[XII. useCallback](#xii-usecallback)
+
+[XIII. useMemo](#xiii-usememo)
+
+
 ## I. React.createElement()
 
 Dùng để tạo ra các element trước khi render vào DOM, tương tự như `document.createElement()` nhưng có cú pháp và cách dùng như sau.
@@ -354,7 +381,7 @@ Xem ví dụ:
 
 Chú ý event được viết dưới dạng `camelCase`
 
-## VI. Các lưu ý trong JSX
+## VI. Note JSX
 
 - code được viết trong dấu `{}` từ các ví dụ trước trong JSX nhận vào là expresssion. Ví dụ nếu trong đó có xuất hiện `if`, `else` => lỗi.
 - Cụ thể:
@@ -939,4 +966,4 @@ Kết quả:
 
 Như vậy chỉ khi nào `[deps]` là `listProducts` thay đổi thì total mới được tính toán lại.
 
-Ta thấy màn hình hiện ra 3 lần `'Tính toán lại'` là do `console` được đặt trong reduce, nên mỗi lần duyệt qua một phần tử mảng nó sẽ in ra một lần.
+Ta thấy màn hình hiện ra 3 lần `'Tính toán lại` là do `console` được đặt trong reduce, nên mỗi lần duyệt qua một phần tử mảng nó sẽ in ra một lần.
