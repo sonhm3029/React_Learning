@@ -829,3 +829,114 @@ Bây giờ thì `Content` component sẽ chỉ thay đổi nếu như props nào
 **Chú ý:**
 
 - Việc sử dụng `useCallback` thường được dùng với `memo` để khắc phục những việc mà `memo` chưa làm được như ví dụ trên là sự thay đổi tham chiếu hàm.
+
+## XIII. useMemo
+
+`useMemo` hook khá giống `useCallback`. Khác nhau ở điểm là `useCallback` thì trả về một `memoized function` còn `useMemo` thì trả về một `memoized value` nào đó.
+
+Xét ví dụ:
+
+```Javascript
+import {useState} from 'react'
+
+function App() {
+    const [productName, setProductName] = useState('');
+    const [productPrice, setProductPrice] = useState('');
+    const [listProducts, setListProducts] = useState([]);
+
+    const handleAddProduct = () => {
+        setListProducts( pre => [...pre, {
+            name: productName,
+            price: Number(productPrice)
+        }]);
+        setProductName('');
+        setProductPrice('');
+    }
+
+    const total = listProducts.reduce((sum, product) => {
+        console.log('Tính toán tại');
+        return sum + product.price;
+    },0)
+
+    return (
+        <>
+            <input
+                value={productName}
+                placeholder="Nhập vào tên sản phẩm"
+                onChange = {e => setProductName(e.target.value)}
+            />
+            <input
+                value={productPrice}
+                placeholder="Nhập vào giá sản phẩm"
+                onChange = {e => setProductPrice(e.target.value)}
+            />
+            <button onClick={handleAddProduct}>Thêm sản phẩm</button>
+            <h2>Total: {total}</h2>
+            <ul>
+                {listProducts.map((product, index) => {
+                    return (
+                        <li key={index}>{product.name} - {product.price}</li>
+                    )
+                })}
+            </ul>
+        </>
+    )
+}
+```
+
+Kết quả:
+
+![useMemo_example_1](./img/useMemo_1.png)
+
+Ta thấy, sau khi thêm một sản phẩm vào list. Khi ta thực hiện nhập sản phẩm tiếp theo thì `'Tính toán lại'` liên tục được gọi ra. Lý do khi ta nhập input `onChange` event sẽ được gọi làm thay đổi state của component dẫn đến việc component bị re-render.
+
+Mỗi lần re-render, nó sẽ gọi lại một lần `listProducts.reduce(...)`, Chính vì thế mà nó in ra `'Tính toán lại'` mặc dù sản phẩm mới chưa được thêm vào. Để rõ hơn ta có thể đặt một dòng log trong component để thấy.
+
+Để giải quyết vấn đề tính toán lại không cần thiết này, ta dùng `useMemo` hook.
+
+`useMemo` sẽ giúp cho giá trị không cần tính toán lại nếu như không có `[deps]` nào của nó bị thay đổi.
+
+**Syntax:**
+
+```Javascript
+import {useMemo} from 'react'
+
+useMemo(callback, [deps]);
+```
+
+Ta dùng với ví dụ trên như sau. Thay đoạn code sau
+
+```Javascript
+const total = listProducts.reduce((sum, product) => {
+    console.log('Tính toán tại');
+    return sum + product.price;
+},0)
+```
+
+thành dùng với `useMemo`
+
+```Javascript
+import {useMemo, useState} from 'react'
+
+function App() {
+    //...
+
+    const total = useMemo(()=> {
+
+        const result = listProducts.reduce((sum, product) => {
+            console.log('Tính toán lại');
+            return sum + product.price;
+        },0);
+
+        return result;
+    },[listProducts])
+}
+```
+
+Kết quả:
+
+![useMemo_example_2](./img/useMemo_2.png)
+
+Như vậy chỉ khi nào `[deps]` là `listProducts` thay đổi thì total mới được tính toán lại.
+
+Ta thấy màn hình hiện ra 3 lần `'Tính toán lại'` là do `console` được đặt trong reduce, nên mỗi lần duyệt qua một phần tử mảng nó sẽ in ra một lần.
