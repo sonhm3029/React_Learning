@@ -967,3 +967,179 @@ Kết quả:
 Như vậy chỉ khi nào `[deps]` là `listProducts` thay đổi thì total mới được tính toán lại.
 
 Ta thấy màn hình hiện ra 3 lần `'Tính toán lại` là do `console` được đặt trong reduce, nên mỗi lần duyệt qua một phần tử mảng nó sẽ in ra một lần.
+
+## XIV. useReducer
+
+Về tổng quan thì `useReducer` có cách dùng giống với `useState` là dùng cho Component có state thay đổi. Điểm khác biệt ở chỗ ở những ứng dụng có state thay đổi đơn giản thì ta dùng `useState` còn đối với một project lớn, xử lý state changed phức tạp thì ta nên sử dụng `useReducer`.
+
+Xem qua ví dụ dưới đây để thấy cách làm việc với useReducer.
+
+Làm ứng dụng tăng hoặc giảm số lượng:
+
+Giao diện và chức năng mong muốn như sau:
+
+![useReducer_example](./img/useReducer_1.png)
+
+So sánh nếu dùng `useState` để làm so với dùng `useReducer`:
+
+`useState` | `useReducer`
+-----------|-------------
+1.Init state: 0 | 1.Init state: 0
+2.Actions: Up(state +1), Down(state-1) |2.Actions: Up(state +1), Down(state)
+ ---|3.call Reducer
+ ---|4.Dispatch
+
+Code ứng dụng với `useReducer`
+
+```Javascript
+import {useReducer} from 'react'
+
+const DOWN = 'down';
+const UP = 'up';
+
+const reducer = (state, action) => {
+    switch(action) {
+        case UP:
+            return state + 1;
+        case DOWN:
+            return state -1;
+        default:
+            throw new Error("Không tồn tại chức năng")
+    }
+}
+
+
+function App() {
+
+    const [count, dispatch] = useReducer(reducer, 0);
+
+
+
+    return (
+        <div id='Count-App' style={{padding:40}}>
+            <h1 style={{marginLeft:20}}>{count}</h1>
+            <button onClick={() => dispatch(UP)}>Up</button>
+            <button onClick={() => dispatch(DOWN)}>Down</button>
+        </div>
+    )
+}
+```
+
+Từ ví dụ trên. Ta thấy `useReducer` có Syntax:
+
+```Javascript
+const [state, dispatch] = useReducer(reducerFunction, initialValue)
+```
+
+Ví dụ sử dụng `useReducer` làm totolist:
+
+```Javascript
+import {useReducer} from 'react'
+
+const initialValue = {
+    work:'',
+    listWorks:[]
+}
+
+const SET_WORK = 'set';
+const ADD_WORK = 'add';
+const DELETE_WORK = 'delete';
+
+const set_work = (payload)=> {
+    return {
+        payload,
+        type: SET_WORK
+    }
+}
+
+const add_work = (payload)=> {
+    return {
+        payload,
+        type: ADD_WORK
+    }
+}
+
+const delete_work = (payload)=> {
+    return {
+        payload,
+        type: DELETE_WORK
+    }
+}
+
+const reducer = (state, action) => {
+    switch(action.type) {
+        case SET_WORK:
+            return {
+                ...state,
+                work:action.payload
+            };
+        case ADD_WORK:
+            return {
+                work:'',
+                listWorks: [...state.listWorks, action.payload]
+            }
+        case DELETE_WORK:
+            const newListWorks = [...state.listWorks];
+            newListWorks.splice(action.payload,1);
+            return {
+                ...state,
+                listWorks: newListWorks
+            }
+        default:
+            throw new Error("Something wrong!");
+    }
+}
+
+function App() {
+
+    const [state, dispatch] = useReducer(reducer, initialValue);
+
+    const {work, listWorks} = state;
+
+    const inputElement = useRef();
+    
+    const handleAddWork = () => {
+        dispatch(add_work(work));
+        inputElement.current.focus();
+    }
+    console.log(state);
+
+    return (
+        <>
+            <div id='Todo-app' style={{padding:40}}>
+                <input
+                    ref={inputElement}
+                    value={work}
+                    placeholder='Thêm công việc'
+                    onChange={e => dispatch(set_work(e.target.value))}
+                />
+                <button onClick={handleAddWork}>Add</button>
+                <div>
+                    <h1>Danh sách công việc</h1>
+                    <ul>
+                        {listWorks.map((work, index) => {
+                            return (
+                                <li key={index}>
+                                    {work}
+                                    <button
+                                        onClick={()=> dispatch(delete_work(index))}
+                                        style={{marginLeft:10}}
+                                    >
+                                        &#10006;
+                                    </button>
+                                </li>
+                            )
+                        })}
+                    </ul>
+                </div>
+            </div>
+        </>
+    )
+}
+```
+
+Cop code thay thế vào file `App.js` để xem kết quả.
+
+Ta thấy rằng việc sử dụng `useReducer` trong bài toán đơn giản như vậy là không nên, vì so với sử dụng `useState` thì nó làm code dài hơn, phức tạp hơn rất nhiều.
+
+Vì vậy phải cân nhắc khi nào cần dùng hook nào.
