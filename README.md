@@ -1325,7 +1325,7 @@ Sau đó sử dụng `Heading` component bình thường trong file App...
 
 Kết quả:
 
-![css_example](./img/CSS_1.png)
+![css_example](./img/Css_1.png)
 
 Ta thấy khi sử dụng CSS stylesheets hay modules trong react thì Webpack đều chuyển chúng về các thẻ `<style></style>` và thêm vào đầu `<head></head>` của trang. Còn khi ta chạy `npm run build` thì Webpack sẽ thêm tất cả các CSS từ các file vào trong một file duy nhất và được tối thiểu hóa lại.
 
