@@ -1143,3 +1143,89 @@ Cop code thay thế vào file `App.js` để xem kết quả.
 Ta thấy rằng việc sử dụng `useReducer` trong bài toán đơn giản như vậy là không nên, vì so với sử dụng `useState` thì nó làm code dài hơn, phức tạp hơn rất nhiều.
 
 Vì vậy phải cân nhắc khi nào cần dùng hook nào.
+
+## XV. useContext
+
+Vấn đề đặt ra:
+
+Khi ta cần truyền state của component cha vào prop của component con để component con có thể sử dụng được, đối với việc dùng một nested component gồm nhiều component lồng nhau sẽ trở nên dài dòng, phức tạp.
+
+**Ví dụ:**
+
+```Javascript
+import {useState} from 'react'
+
+function Component1() {
+    const [state, setState] = useState('ok');
+
+    return (
+        <Component2 content={state} />
+    );
+}
+
+function Component2({content}) {
+    return (
+        <Component3 content={content} />
+    )
+}
+
+function Component3({content}) {
+    return (
+        <Component4 content={content} />
+    );
+}
+
+function Component4({content}) {
+    return (
+        <>
+            <h1>This is the content:</h1>
+            <span>{content}</span>
+        </>
+    )
+}
+```
+
+Như vậy để dùng được `state` của `Component1` ở `Component4` thì ta phải truyền liên tục `state` đó vào prop của từng component con để có thể đến được `Componet4`.
+
+Để khắc phục việc truyền phức tạp như thế thì ta có thể dùng `useContext` hook để đưa `state` của component cha trở lên accessiable cho tất cả các component con của nó có thể truy cập trực tiếp mà không cần truyền qua từng component con một.
+
+Với ví dụ trên, ta làm như sau:
+
+Đầu tiên để dùng `useContext` hook thì ta cần tạo context bằng `createContext`. Rồi sau đó ta sẽ dùng `Context Provider` bọc lấy hệ thống nested component để có thể sử dụng context truyền đi.
+
+```Javascript
+import {useState, useContext, createContext} from 'react'
+
+// Tạo context
+const exampleContext = createContext();
+
+function Component1 () {
+
+    const [state, setState] = useState('ok');
+
+    return (
+        <exampleContext.Provider value={state}>
+            <Component2/>
+        </exampleContext.Provider>
+    );
+}
+```
+
+Bây giờ tất cả các component trong hệ thống nested component để có thể truy cập tới `context` đã đặt.
+
+Để truy cập tới `context` đã đặt tại component bất kì trong hệt thống nested component, trong ví dụ này là `Component4` ta làm như sau:
+
+```Javascript
+function Component4() {
+    const context = useContext(exampleContext);
+
+    return (
+        <>
+            <h1>This is the content:</h1>
+            <span>{context}</span>
+        </>
+    )
+}
+```
+
+## XVI. Sử dụng CSS và SCSS trong project với webpack
