@@ -1229,3 +1229,106 @@ function Component4() {
 ```
 
 ## XVI. Sử dụng CSS và SCSS trong project với webpack
+
+Có các cách để CSS trong react app như sau:
+
+- Inline styling
+- CSS stylesheets
+- CSS modules
+
+1. Inline styling:
+
+- Có thể sử dụng hai cách:
+  - Sử dụng trực tiếp trong element:
+
+  ```Javascript
+    <div style={{backgroundColor: 'red', color:'white'}}></div>
+  ```
+
+  Đối với cách này thì chú ý các css-props cần phải viết dưới dạng camelCase nếu có từ 2 từ trở lên.
+  - Sử dụng styles như một object:
+
+  ```Javascript
+    const style = {
+        backgroundColor: 'red',
+        color: 'white'
+    }
+
+    <div style= {style}></div>
+  ```
+
+2. CSS stylesheets
+
+Ta có thể dùng CSS stylesheets để CSS như bình thường và import vào project để dùng.
+
+Ví dụ ta có file `App.css`
+
+```CSS
+.my_css {
+    background-color: red;
+    color: white;
+}
+```
+
+Trong file `App.js`
+
+```Javascript
+import './App.css'
+
+function App() {
+    return (
+        <div className="my-css">Đây là ví dụ</div>
+    )
+}
+
+```
+
+Với cách này thì với việc phân tách ra nhiều file css có thể dẫn đến việc trùng class, trùng CSS một cách không mong muốn nên cần phải lưu ý.
+
+3. CSS modules
+
+Đối với việc sử dụng CSS modules thì ta sẽ khắc phục được vấn đề tách ra nhiều file css riêng cho từng component mà không sợ bị trùng tên class.
+
+Để sử dụng CSS modules ta sẽ đặt tên các file CSS theo cứ pháp: `<tên component>.module.css`.
+
+Ví dụ CSS cho component `Content`:
+
+Trong `/Content/Content.module.css`
+
+```CSS
+.heading {
+    color: red;
+}
+#content {
+    background-color: white;
+}
+```
+
+Trong `/Content/index.js`
+
+```Javascript
+import styles from './Content.module.css'
+
+function Content() {
+    return (
+        <h1 classNames={styles.heading}>Đây là tiêu đề</h1>
+    )
+}
+
+export default Content;
+
+```
+
+Sau đó sử dụng `Heading` component bình thường trong file App...
+
+Đối với việc sử dụng CSS module thì `React` sẽ tự động sinh ra các `class` hay `id` theo cú pháp `<tên file CSS>_<tên class/id...>_<đường dẫn đến file được mã hóa>`. Vì vậy mà ta không lo sợ việc bị trùng lặp `class` CSS không mong muốn.
+
+Kết quả:
+
+![css_example](./img/CSS_1.png)
+
+Ta thấy khi sử dụng CSS stylesheets hay modules trong react thì Webpack đều chuyển chúng về các thẻ `<style></style>` và thêm vào đầu `<head></head>` của trang. Còn khi ta chạy `npm run build` thì Webpack sẽ thêm tất cả các CSS từ các file vào trong một file duy nhất và được tối thiểu hóa lại.
+
+Kết quả:
+
+![CSS_2](./img/CSS_2.png)

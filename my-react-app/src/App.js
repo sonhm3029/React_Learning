@@ -9,7 +9,7 @@ import {
     useContext,
     createContext
 } from 'react'
-import Content from './Content'
+import Content from './Components/Content'
 
 // function App() {
 //     const [counter, setCounter] = useState(1);
