@@ -9,33 +9,26 @@ import {
     useContext,
     createContext
 } from 'react'
-import Content from './Components/Content'
 
-// function App() {
-//     const [counter, setCounter] = useState(1);
+import { Route, Routes } from 'react-router-dom';
+import Content from './Components/Content';
+import LayoutPage from './pages/Layout';
+import BlogsPage from './pages/Blogs';
+import ContactPage from './pages/Contact';
+import HomePage from './pages/Home';
+import NoPage from './pages/NoPage';
 
-//     const handleIncreasing = () => {
-//         setCounter(preCounter => preCounter +1);
-//         setCounter(preCounter => preCounter +1);
-//         setCounter(preCounter => preCounter +1);
-//     }
-
-//     return (
-//         <div className="App" style={{padding: 20}}>
-//             <h1>{counter}</h1>
-//             <button onClick={handleIncreasing}>Increase</button>
-//         </div>
-//     );
-// }
 function App() {
 
-    const [show, setShow] = useState(false);
-
     return (
-        <div id='App' style={{padding: 40}}>
-            <button onClick={() => setShow(!show)}>Show/Hide</button>
-            {show && <Content />}
-        </div>
+        <Routes>
+            <Route path='/' element= {<LayoutPage />}>
+                <Route index element= {<HomePage />} />
+                <Route path="blogs"  element= {<BlogsPage />} />
+                <Route path="contact"  element= {<ContactPage />} />
+                <Route path="*"  element= {<NoPage />} />
+            </Route>
+        </Routes>
     )
    
 }

@@ -1405,3 +1405,121 @@ function Content() {
     )
 }
 ```
+
+Ngoài ra để sử dụng `sass` thì chỉ cần install `sass` và sử dụng như với CSS stylesheets hoặc CSS modules.
+
+## XVII. React router V6
+
+Dùng để định tuyến các page của trang web, với mục đích không làm refresh lại trang (SPA).
+
+Để sử dụng ta cần install:
+
+Install phiên bản v6
+
+```shell
+>npm i react-router-dom@6
+```
+
+Hoặc Install phiên bản mới nhất:
+
+```shell
+>npm i react-router-dom@latest
+```
+
+Tiếp theo, người ta thường tạo một cấu trúc thư mục như sau:
+
+`src\pages\`:
+
+- `Layout.js`
+- `Home.js`
+- `Contact.js`
+- `Blogs.js`
+- `NoPage.js`
+
+Đầu tiên cần bọc toàn bộ Component `App` trong `index.js` với `BrowserRouter` như sau:
+
+![router_1](./img/router_1.png)
+
+Mỗi web thì chỉ có một bộ định tuyến như vậy.
+
+Tiếp theo trong file `App.js` ta cần import `Route` và `Routes` từ thư viện `react-router-dom`. Trong đó, `Routes` là thẻ ôm toàn bộ đoạn code định tuyến, nội dụng của các component pages sẽ được render tại vị trí này. Trong thẻ `Routes`, đặt các thẻ `Route` link tới page components. Xem ví dụ:
+
+![router_2](./img/router_2.png)
+
+Giải thích:
+
+- Thẻ `<Route>` để định tuyến có thể nested. Như ví dụ trên, trong thẻ `<Route>` định tuyến tới Component `LayoutPage`, ta đặt `path` là `'/'`. Vì vậy các `<Route>` nằm trong sẽ được kế thừa `path` từ thẻ `<Route>` ôm nó. Ví dụ `<Route>` định tuyến tới `BlogPage` sẽ có `path` được kết hợp từ `'/'` và `path` của nó là `'blogs'` thành `/blogs`.
+- `<Route>` định tuyến tới `HomePage` thì không có `path` nhưng nó có `index` tức là nó sẽ định tuyến default giống với `<Route>` của `LayoutPage`
+- Đối với `NoPage` thì `<Route>` có `path='*'` tức là nó sẽ đi đến page này nếu như gặp `undefined` route/url. Đây là trang 404 not found.
+
+Trong file `Layout.js`:
+
+![router_3](./img/router_3.png)
+
+Giải thích:
+
+Ta dùng `<Link to=''>` tag của thư viện `react-router-dom` thay vì dùng `<a href=''>` Vì thẻ `<a>` sẽ làm reload lại page, như vậy không đảm bảo SPA. Còn `<Link>` sẽ không reload lại page.
+
+Thẻ `<Outlet />` của thư viện `react-router-dom` là vị trí render component khi các route được gọi.
+
+Do Layout route bọc tất cả các route còn lại nên navbar sẽ được kế thừa qua các route trở thành template của page.
+
+Trong các file pages còn lại :
+
+Blogs.js
+
+```Javascript
+function Blogs() {
+    return (
+        <h1>Blogs page</h1>
+    )
+}
+
+export default Blogs;
+
+```
+
+Contact.js
+
+```Javascript
+function Contact() {
+    return (
+        <h1>Contact page</h1>
+    )
+}
+
+export default Contact;
+
+```
+
+Home.js
+
+```Javascript
+function Home() {
+    return (
+        <h1>Home page</h1>
+    )
+}
+
+export default Home;
+
+```
+
+NoPage.js
+
+```Javascript
+function NoPage() {
+    return (
+        <h1>NoPage page</h1>
+    )
+}
+
+export default NoPage;
+
+```
+
+Kết quả:
+
+![router_4](./img/router_4.png)
+![router_5](./img/router_5.png)
+![router_6](./img/router_6.png)
