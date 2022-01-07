@@ -1332,3 +1332,76 @@ Ta thấy khi sử dụng CSS stylesheets hay modules trong react thì Webpack �
 Kết quả:
 
 ![CSS_2](./img/CSS_2.png)
+
+Chú ý rằng, phương pháp làm unique `class` này thường chỉ được sử dụng với từng `Component` và hoạt động với `class` hoặc `id`... Nếu ta đưa vào file các thẻ tag như `<h1>`, `<p>`... Thì việc CSS cho các thẻ này sẽ hoạt động toàn cục, không tạo được unique như `class`.
+
+Để sử dụng CSS cho các thẻ `tag` như trên thì ta có hai hướng:
+
+- CSS cho các thẻ đó bằng CSS stylesheets, nhưng chú ý nên tạo ra một component ôm toàn bộ trang và đặt stylesheets cho nó => như vậy ta sẽ được CSS toàn cục thay vì việc dùng trực tiếp lên file `App.css`
+
+- Sử dụng `sass` để css nested component...
+
+### Sử dụng multiple class thế nào đối với CSS module ?
+
+Việc sử dụng multiple class có thể được thực hiện bằng `JS`. ví dụ:
+
+```CSS
+/* Đây là file Content.module.css */
+.dFlex {
+    display: flex;
+}
+
+.bgPrimary {
+    background-color: blue;
+}
+```
+
+```Javascript
+import styles from './Content.module.css'
+
+function Content() {
+    return (
+        <div className={[styles.dFlex, styles.bgPrimary].join(' ')}></div>
+    )
+}
+```
+
+Hoặc
+
+```Javascript
+import styles from './Content.module.css'
+
+function Content() {
+    return (
+        <div className={`${styles.dFlex} ${styles.bgPrimary}`}></div>
+    )
+}
+```
+
+Ngoài ra ta còn có thể sử dụng thư viện trợ giúp:
+
+- `clsx`
+- `classnames`
+
+Hai thư viện này tính năng tương tự nhau, có thể tự tìm hiểu trên `npm`.
+
+Khuyến khích dùng `clsx`
+
+Tải về:
+
+```shell
+>npm install clsx
+```
+
+Để dùng:
+
+```Javascript
+import styles from './Content.module.css'
+import clsx from 'clsx'
+
+function Content() {
+    return (
+        <div className={clsx(styles.dFlex, styles.bgPimary)}></div>
+    )
+}
+```
