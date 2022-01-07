@@ -13,7 +13,7 @@ import {
 import { Route, Routes } from 'react-router-dom';
 import Content from './Components/Content';
 import LayoutPage from './pages/Layout';
-import BlogsPage from './pages/Blogs';
+import BlogsPage from './pages/Blogs.jsx';
 import ContactPage from './pages/Contact';
 import HomePage from './pages/Home';
 import NoPage from './pages/NoPage';
