@@ -21,14 +21,15 @@ import NoPage from './pages/NoPage';
 function App() {
 
     return (
-        <Routes>
-            <Route path='/' element= {<LayoutPage />}>
-                <Route index element= {<HomePage />} />
-                <Route path="blogs"  element= {<BlogsPage />} />
-                <Route path="contact"  element= {<ContactPage />} />
-                <Route path="*"  element= {<NoPage />} />
-            </Route>
-        </Routes>
+        // <Routes>
+        //     <Route path='/' element= {<LayoutPage />}>
+        //         <Route index element= {<HomePage />} />
+        //         <Route path="blogs"  element= {<BlogsPage />} />
+        //         <Route path="contact"  element= {<ContactPage />} />
+        //         <Route path="*"  element= {<NoPage />} />
+        //     </Route>
+        // </Routes>
+        <Content />
     )
    
 }

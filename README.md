@@ -26,6 +26,14 @@
 
 [XIII. useMemo](#xiii-usememo)
 
+[XIV. useReducer](#xiv-usereducer)
+
+[XV. useContext](#xv-usecontext)
+
+[XVI. Sử dụng CSS và SCSS trong project với webpack](#xvi-su-dung-css-va-scss-trong-project-voi-webpack)
+
+[XVII. React router V6](#xvii-react-router-v6)
+
 
 ## I. React.createElement()
 
@@ -1523,3 +1531,6 @@ Kết quả:
 ![router_4](./img/router_4.png)
 ![router_5](./img/router_5.png)
 ![router_6](./img/router_6.png)
+
+## XVIII. Redux
+
