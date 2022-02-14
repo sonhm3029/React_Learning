@@ -18,7 +18,7 @@
 
 [IX. useLayoutEffect](#ix-uselayouteffect)
 
-[X. useRef](#xi-useref)
+[X. useRef](#x-useref)
 
 [XI. React.memo (HOC)](#xi-reactmemo-hoc)
 
