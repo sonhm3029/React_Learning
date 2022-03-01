@@ -7,7 +7,8 @@ import {
     useReducer,
     useRef,
     useContext,
-    createContext
+    createContext,
+    useEffect
 } from 'react'
 
 import { Route, Routes } from 'react-router-dom';
@@ -19,6 +20,14 @@ import HomePage from './pages/Home';
 import NoPage from './pages/NoPage';
 
 function App() {
+    const [number, setNumber] = useState(0);
+
+    useEffect(()=> {
+        setInterval(()=> {
+            console.log(number);
+            setNumber(pre => pre +1);
+        },1000)
+    },[]);
 
     return (
         // <Routes>
@@ -29,7 +38,12 @@ function App() {
         //         <Route path="*"  element= {<NoPage />} />
         //     </Route>
         // </Routes>
-        <Content />
+        // <Content />
+        <div style={{
+            fontSize: 100
+        }}>
+            {number}
+        </div>
     )
    
 }

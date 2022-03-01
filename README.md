@@ -1534,3 +1534,188 @@ Kết quả:
 
 ## XVIII. Redux
 
+State management library, dùng để quản lý state cho project có state phức tạp, khó quản lý.
+
+Các khái niệm cần biết:
+
+- Store
+- Actions
+- Reducers
+
+Install module:
+
+```Shell
+> npm install redux react-redux
+```
+
+hoặc 
+
+```Shell
+> yarn add redux react-redux
+```
+
+Basic knowledge về redux:
+
+Bao gồm:
+
+- `createStore(reducer)`
+- `reducer(state,action)`
+- `store.getState()`
+- `store.dispatch(action)`
+
+[Ví dụ](https://codesandbox.io/s/redux-example-ro4yro?file=/src/App.js)
+
+Kết nối redux với React:
+
+[Ví dụ](https://codesandbox.io/s/redux-example-1-qduv0r?file=/src/redux/todo.js)
+
+Để sử dụng redux với React ta cần làm như sau:
+
+Tạo folder redux chứa các file khai báo reducer và store:
+
+![redux_1](./img/redux_1.png)
+
+Tạo các file khai báo reducer, ví dụ với `todo.js`:
+
+```Javascript
+const initState = {
+  items:[]
+};
+
+const ADD_TODO = "ADD_TODO";
+
+export const addTodo = (text) => ({
+    type: ADD_TODO,
+    payload: text
+});
+
+const reducer = (state=initState,action)=> {
+  switch(action.type) {
+    case "ADD_TODO":
+      return {
+        ...state,
+        items: [...state.items,action.payload]
+      }
+    default:
+      return state;
+  } 
+}
+
+export default reducer;
+```
+
+trong đó nên gán `initState` cho reducer để thực hiện `combineReducers`. Hàm `addTodo` là action creater.
+
+Trong file `store.js`, tạo store
+
+```Javascript
+import { createStore, combineReducers } from "redux";
+import todoReducer from "./todo";
+
+const reducer = combineReducers({
+  todo: todoReducer
+});
+
+export default createStore(reducer);
+```
+
+**Kết nối redux với react với redux connect:**
+
+![redux_2](./img/redux_2.png)
+
+Sử dụng HOC `connect` của `react-redux`.
+
+Trong đó, `connect` nhận vào 2 tham số (tùy cách đặt tên):
+
+- Tham số đầu tiên là hàm `mapStateToProps`. Hàm này nhận vào state tổng, hay là state của store, được gọi khi state của store thay đổi và trả về state mà components muốn connect cần. Trong trường hợp này là state của `TodoApp`.
+
+- Tham số thứ hai là `mapActionsToProps` có thể là function hoặc object:
+
+    - Nếu là function thì nó nhận vào tham số `dispatch`, trả về Object trong đó có các function `dispatch` action. Lưu ý do là dispatch action nên tham số nhận vào của dispatch phải có giá trị cụ thể.
+
+    Ví dụ:
+
+    ```Javascript
+    const mapActionsToProps = (dispatch) => ({
+        addTodo: (text) => dispatch({
+            type:"ADD_TODO",
+            payload:text
+        })
+        //Hoặc
+        //addTodo: (text) => dispatch(addTodo(text))
+    })
+    ```
+    - Nếu là Object thì trong Object có các hàm thành viên là các action creater như ảnh đầu tiên. (**Recommend cách này vì nó là shorthand**), ngắn gọn oke hơn. Các action creater trong object này sẽ tự động dispatch action khi nó được gọi trong component.
+
+
+Hai tham số `mapStateToProps` và `mapActionToProps` sẽ được truyền vào component như props, chú ý tên đặt trong khai báo ở file connect.
+
+```Javascript
+import React, { useState } from "react";
+
+export default function TodoApp({ todos, addTodo }) {
+  const [text, setText] = useState("");
+  return (
+    <div>
+      <input
+        type="text"
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+      />
+      <button onClick={() => addTodo(text)}>Add</button>
+      <ul>
+        {todos.map((todo) => (
+          <li>{todo}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+```
+
+Cuối cùng để sử dụng được store thì ta cần bọc toàn bộ app bằng `Provider` của `redux` và truyền vào đó store:
+
+Trong file `index.js`:
+
+```Javascript
+import { StrictMode } from "react";
+import ReactDOM from "react-dom";
+import {Provider} from 'react-redux';
+import store from './redux/store';
+import App from "./App";
+
+const rootElement = document.getElementById("root");
+ReactDOM.render(
+    <Provider store={store}>
+      <StrictMode>
+        <App />
+      </StrictMode>
+    </Provider>,
+  rootElement
+);
+```
+
+Để sử dụng `Redux Devtools` thêm vào trong file `store.js` đoạn sau:
+
+```Javascript
+window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+```
+
+![redux_3](./img/redux_3.png)
+
+Đọc thêm ở đây:
+
+[Redux Devtools guide](https://github.com/reduxjs/redux-devtools/tree/main/extension#installation)
+
+
+![redux_4](./img//redux_4.png)
+
+Với cửa số làm việc như trên thì có:
+
+- Action: các action hiện có của store
+- State: state hiện tại
+- Diff: state trước đó
+
+Phía bên tay trái là các action được dispatch.
+
+## XIX. Redux middleware
