@@ -1567,7 +1567,7 @@ Bao gồm:
 
 Kết nối redux với React:
 
-[Ví dụ](https://codesandbox.io/s/redux-example-1-qduv0r?file=/src/redux/todo.js)
+[Ví dụ](https://codesandbox.io/s/priceless-bardeen-8p1lsp)
 
 Để sử dụng redux với React ta cần làm như sau:
 
@@ -1719,3 +1719,273 @@ Với cửa số làm việc như trên thì có:
 Phía bên tay trái là các action được dispatch.
 
 ## XIX. Redux middleware
+
+![redux_5](./img/redux_5.png)
+
+[Ví dụ](https://codesandbox.io/s/strange-dew-7ubo8r?file=/src/redux/store.js)
+
+Trong file `store.js`
+
+```Javascript
+import {
+  createStore,
+  combineReducers,
+  applyMiddleware
+} from "redux";
+import todoReducer from "./todo";
+
+const reducer = combineReducers({
+  todo: todoReducer
+});
+
+const myMiddleware = store => next => action => {
+  console.log(next);
+  console.log(action);
+  return next(action);
+}
+
+export default createStore(
+  reducer,
+  applyMiddleware(myMiddleware),
+  // window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+);
+
+```
+
+- import `applyMiddleware` và sử dụng như đoạn code trên. Trong đó `applyMiddware(mw1,mw2...)` nhận vào tham số là các middleware tự định nghĩa như `myMiddleware`.
+
+- `myMiddleware` là currying function trong đó các tham số:
+
+- store: store tạo bởi `createStore()` của redux
+- next: dispatch,
+- action: action
+
+![redux_6](./img/redux_6.png)
+
+Ví dụ có thể sử dụng middleware để check nội dung nhập vào của action, hide đi action mang payload có nội dung bậy bạ:
+
+```Javascript
+const myMiddleware = store => next => action => {
+  if(action.payload==="fuck") {
+    action.payload = "***";
+  }
+  return next(action);
+}
+```
+
+### Redux thunk
+
+Ví dụ với sử dụng async middleware với redux:
+
+Với việc set todolist ban đầu, thay vì việc gọi axios ngay trong `useEffect` của component thì ta làm như sau
+
+```Javascript
+import React, {
+   useState,
+   useEffect
+} from "react";
+
+export default function TodoApp({
+    todos, addTodo, fetchTodo
+})
+{
+
+  useEffect(()=> {
+    fetchTodo();
+  },[fetchTodo])
+
+  const [text, setText] = useState("");
+  return (
+    <div>
+      <input
+        type="text"
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+      />
+      <button onClick={() => addTodo(text)}>Add</button>
+      <ul>
+        {todos.map((todo) => (
+          <li
+            key={todo.id}
+          >{todo.title}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+```
+
+Trong đó `fetchTodo` được định nghĩa trong file `todo.js`
+
+```Javascript
+import axios from "axios";
+
+
+const initialState = {
+  items: []
+};
+
+const ADD_TODO = "ADD_TODO";
+const SET_TODO = "SET_TODO";
+
+export const addTodo = (text) => ({
+  type: ADD_TODO,
+  payload: text
+});
+export const setTodo = (todos)=> ({
+  type:SET_TODO,
+  payload:todos
+})
+
+export const fetchTodo = async(dispatch) => {
+  const res = await axios.get("https://jsonplaceholder.typicode.com/todos")
+  dispatch(setTodo(res.data));
+}
+
+const reducer = (state = initialState, action) => {
+  switch (action.type) {
+    case ADD_TODO:
+      return {
+        ...state,
+        items: [...state.items, {
+          title:action.payload
+        }]
+      };
+    case SET_TODO:
+      console.log(action.payload);
+      return {
+        ...state,
+        items:action.payload
+      }
+    default:
+      return state;
+  }
+};
+
+export default reducer;
+
+```
+
+Với `fetchTodo` được truyền vào từ redux connect như sau:
+
+```Javascript
+import axios from "axios";
+import { connect } from "react-redux";
+
+import TodoApp from "../components/TodoApp";
+import { addTodo,setTodo, fetchTodo} from "../redux/todo";
+
+const mapStateToProps = (state) => ({
+  todos: state.todo.items
+});
+
+// const mapActionsToProps = {
+//   addTodo,
+//   setTodo
+// };
+
+const mapActionsToProps = (dispatch) => ({
+  addTodo: (text)=> dispatch(addTodo(text)),
+  setTodo: (todos)=> dispatch(setTodo(todos)),
+  fetchTodo: ()=> dispatch(fetchTodo)
+})
+
+
+export default connect(mapStateToProps, mapActionsToProps)(TodoApp);
+
+```
+
+Ta sẽ thấy có lỗi như sau:
+
+![redux_7](./img/redux_7.png)
+
+Như vậy để có thể sử dụng được `fetchTodo` ta import `redux-thunk` và sử dụng như sau:
+
+```Javascript
+import { createStore, combineReducers, applyMiddleware } from "redux";
+import todoReducer from "./todo";
+import thunk from "redux-thunk";
+const reducer = combineReducers({
+  todo: todoReducer
+});
+
+const myMiddleware = (store) => (next) => (action) => {
+  if (action.payload === "fuck") {
+    action.payload = "***";
+  }
+  return next(action);
+};
+
+// const asyncMiddleware = (store) => (next) => (action) => {
+//   if (typeof action === "function") {
+//     action(next);
+//   }
+// };
+
+export default createStore(
+  reducer,
+  applyMiddleware(myMiddleware,thunk)
+  // window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+);
+
+```
+
+Ta thấy ở middleware thứ nhất, do `redux` không chấp nhận `fetchTodo`, vì đây không phải là `action creater` function. Cho nên sẽ chuyển qua `middleware` tiếp theo là `asyncMiddleware`, tại đây thì ta đã xử lý được bằng cách tự `dispatch`.
+
+Tuy nhiên thay vì phải define ra đoạn code `asyncMiddleware` như trên thì ta có thể sử dụng bằng `redux-thunk`.
+
+## XX Redux-toolkit
+
+Có thể sử dụng `configureStore` của `@reduxjs/toolkit`. Việc sử dụng `configureStore` thay cho `createStore` sẽ không cần phải thêm `thunk` và `redux devtool` cũng như một số middleware khác vào `createStore` như cũ vì nó đã được tích hợp sẵn.
+
+Vì vậy thay vì:
+
+```Javascript
+import { createStore, combineReducers, applyMiddleware } from "redux";
+import todoReducer from "./todo";
+import thunk from "redux-thunk";
+const reducer = combineReducers({
+  todo: todoReducer
+});
+
+const myMiddleware = (store) => (next) => (action) => {
+  if (action.payload === "fuck") {
+    action.payload = "***";
+  }
+  return next(action);
+};
+
+
+export default createStore(
+  reducer,
+  applyMiddleware(myMiddleware,thunk)
+  // window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+);
+
+```
+
+thì ta có:
+
+```Javascript
+import { createStore, combineReducers, applyMiddleware } from "redux";
+import todoReducer from "./todo";
+import {configureStore} from '@reduxjs/toolkit';
+
+const reducer = combineReducers({
+  todo: todoReducer
+});
+
+const myMiddleware = (store) => (next) => (action) => {
+  if (action.payload === "fuck") {
+    action.payload = "***";
+  }
+  return next(action);
+};
+
+
+export default configureStore({
+    reducer
+})
+
+```
